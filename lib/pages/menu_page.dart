@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:sushishop/components/button.dart';
 import 'package:sushishop/components/food_tile.dart';
 import 'package:sushishop/models/food.dart';
+import 'package:sushishop/models/shop.dart';
 import 'package:sushishop/pages/food_details_page.dart';
 import 'package:sushishop/theme/colors.dart';
 
@@ -14,28 +16,16 @@ class MenuPage extends StatefulWidget {
 }
 
 class _MenuPageState extends State<MenuPage> {
-
-  //food menu
-  List foodMenu = [
-    //salmon sushi
-    Food(
-      name: 'Salmon Sushi', 
-      price: '350', 
-      imagePath: 'lib/images/salmon_sushi.png', 
-      rating: '4.7'
-      ),
-    //tuna
-     Food(
-      name: 'Tuna', 
-      price: '400', 
-      imagePath: 'lib/images/tuna.png', 
-      rating: '4.5'
-      ),
-  ];
-
   //navigate to food item details page
 void navigateToFoodDetials(int index) {
-  Navigator.push(context, MaterialPageRoute(builder: (context) => FoodDetailsPage(
+
+  //get the shop and its menu
+  final shop = context.read<Shop>();
+  final foodMenu = shop.foodMenu;
+
+  Navigator.push(
+    context, MaterialPageRoute(
+      builder: (context) => FoodDetailsPage(
     food: foodMenu[index],
   )
   ),
@@ -44,6 +34,9 @@ void navigateToFoodDetials(int index) {
 
   @override
   Widget build(BuildContext context) {
+    //get the shop and its menu
+  final shop = context.read<Shop>();
+  final foodMenu = shop.foodMenu;
     return Scaffold(
       backgroundColor: Colors.grey[300],
       appBar: AppBar(
@@ -51,15 +44,24 @@ void navigateToFoodDetials(int index) {
         elevation: 0,
         leading:Icon(
           Icons.menu,
-          color: Colors.grey[900],
         ),
         titleSpacing: 110,
         title: Text(
           'Tokyo', 
-          style: TextStyle(
-            color: Colors.grey[900],  
+          style: TextStyle(  
         ),
         ),
+        actions: [
+          //cart button
+          IconButton(
+            onPressed: (){
+              Navigator.pushNamed(
+                context, 
+              '/cartpage');
+            }, 
+          icon: Icon(Icons.shopping_cart),
+          ),
+        ],
         ),
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -82,7 +84,7 @@ void navigateToFoodDetials(int index) {
                   color: Colors.white,
                 ),),
                 SizedBox(height: 20,),
-
+        
                 // redeem button
                 MyButton(text: 'Redeem', onTap: (){},
                 ),
@@ -96,9 +98,9 @@ void navigateToFoodDetials(int index) {
               ],
               ),
             ),
-
+        
             SizedBox(height: 25),
-
+        
             //search bar
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 25.0),
@@ -116,9 +118,9 @@ void navigateToFoodDetials(int index) {
                   ),
               ),
             ),
-
+        
             SizedBox(height: 25,),
-
+        
             //menu list
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 25.0),
@@ -130,9 +132,9 @@ void navigateToFoodDetials(int index) {
                   ),
               ),
             ),
-
+        
             SizedBox(height: 10,),
-
+        
             Expanded(
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
@@ -143,9 +145,9 @@ void navigateToFoodDetials(int index) {
                 ),
                 ),
             ),
-
+        
             SizedBox(height: 25,),
-
+        
             //popular food
             Container(
               decoration: BoxDecoration(
@@ -174,9 +176,9 @@ void navigateToFoodDetials(int index) {
                         'Salmon Eggs', 
                       style: GoogleFonts.dmSerifDisplay(),
                       ),
-
+        
                       SizedBox(height: 10,),
-
+        
                       //price
                       Text('\₹450', style: TextStyle(color: Colors.grey[700],
                       ),
@@ -185,14 +187,13 @@ void navigateToFoodDetials(int index) {
                   ),
                     ],
                   ),
-
+        
                   //heart
                   Icon(
                     Icons.favorite_outline,
                     size: 28,
                     color: Colors.grey,
                   ),
-
                   //container
                 ],
               ),
